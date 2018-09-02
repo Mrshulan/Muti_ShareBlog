@@ -4,10 +4,25 @@ const views = require("koa-views")
 const router = require("./routers/router")
 const logger = require("koa-logger")
 const { join } = require("path")
+const session = require("koa-session")
 
 const app = new Koa
 
+app.keys = ["shulan"]
+
+const CONFIG = {
+    key: "Sid",
+    maxAge: 36e5,
+    overwrite: true,
+    httpOnly: true,
+    signed: true,
+    rolling: true
+}
+
+
 app.use(logger())
+
+app.use(session(CONFIG))
 
 app.use(body())
 
