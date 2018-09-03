@@ -1,10 +1,10 @@
-const { Schema } = require("./config")
+const { Schema } = require('./config')
 
-const UserSchama = new Schema({ 
-    username: String,
-    password: String
-}, {
-    versionkey: false
-})
+// 生成Schema实例规范
+const UserSchema = new Schema({
+  username: String,
+  password: String
+}, {versionKey: false})
+
 
 module.exports = UserSchema
