@@ -26,7 +26,9 @@ exports.reg = async ctx => {
            // 用User模子new一个	数据记录行/文档BSON 记得用模块导出的函数加密 函数返回的是加密后的数据
            const _user = new User({
                username,
-               password: encrypt(password)
+               password: encrypt(password),
+               commentNum: 0,
+               articleNum: 0
            })
            // 保存该数据
            _user.save((err, data) => {
@@ -146,3 +148,25 @@ exports.logout = async ctx => {
     // 在后台重定向到 根
     ctx.redirect("/")
 }
+
+// 用户的头像上传
+exports.upload = async ctx => {
+    const filename = ctx.req.file.filename
+  
+    let data = {}
+    await User.update({_id: ctx.session.uid}, {$set: {avatar: "/avatar/" + filename}}, (err, res) => {
+      if(err){
+        data = {
+          status: 0,
+          message: "上传失败"
+        }
+      }else{
+        data = {
+          status: 1,
+          message: '上传成功'
+        }
+      }
+    })
+  
+    ctx.body =  data
+  }

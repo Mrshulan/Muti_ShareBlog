@@ -109,3 +109,96 @@ exports.details = async ctx => {
         session: ctx.session
     })
 }
+
+exports.artlist = async ctx => {
+    const uid = ctx.session.uid;
+
+    const data = await Article.find({author: uid})
+
+    ctx.body = {
+        code: 0,
+        count: data.length,
+        data
+    }
+}
+
+// 删除对应 id 的文章
+exports.del = async ctx => {
+    const _id = ctx.params.id
+    
+    let uid;
+  
+    // 用户的 articleNum  -= 1
+    // 删除文章对应的所有的评论
+    // 被删除评论对应的用户表里的 commnetNum -= 1
+  
+    let res = {}
+  
+    // 删除文章
+    // await Article.deleteOne({_id}).exec(async err => {
+    //   if(err){
+    //     res = {
+    //       state: 0,
+    //       message: '删除失败'
+    //     }
+    //   }else{
+    //     await Article.findById(_id).then(data => {
+    //       uid = data.author
+    //     })
+    //   }
+    // })
+
+    await Article.findById(_id).then(async data => {
+        uid = data.author;
+        await Article.deleteOne({_id}).exec(async err => {
+            if(err){
+                res = {
+                    state: 0,
+                    message: '删除失败'
+                  }
+            }else{
+                 await User.update({_id: uid}, {$inc: {articleNum: -1}})
+            }
+        });
+    })
+  
+    // 删除所有评论
+    await Comment.find({article: _id}).then(async data => {
+      // data => array
+      let len = data.length
+      let i = 0
+  
+      async function deleteUser(){
+        if(i >= len)return
+        const cId = data[i]._id
+  
+        // await Comment.deleteOne({_id: cId}).then(data => {
+        //   User.update({_id: data[i].from}, {$inc: {commentNum: -1}}, err => {
+        //     if(err)return console.log(err)
+        //     i++
+        //   })
+        // })
+        
+        await User.update({_id: data[i].from}, {$inc: {commentNum: -1}}).then(async err => {
+            if(err)return console.log(err)
+            i++;
+            console.log(i)
+            await Comment.deleteOne({_id: cId});
+        })
+
+      }
+  
+  
+      await deleteUser()
+  
+  
+      res = {
+        state: 1,
+        message: "成功"
+      }
+  
+    })
+  
+  
+    ctx.body = res
+  }
