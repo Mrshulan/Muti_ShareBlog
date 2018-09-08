@@ -1,12 +1,15 @@
 const { db } = require("../Schema/config")
 const ArticleSchema = require("../Schema/article")
+// 通过db对象在库里边创建了users数据库表/集合(collection)以ArticleSchema作为数据模型 Article操作整张表
+const Article = db.model("articles", ArticleSchema)
 
 // 拿到users的Schema 拿到可以控制的实例对象
 const UserSchema = require("../Schema/user")
 const User = db.model("users", UserSchema)
 
-// 通过db对象在库里边创建了users数据库表/集合(collection)以ArticleSchema作为数据模型 Article操作整张表
-const Article = db.model("articles", ArticleSchema)
+const CommentSchema = require("../Schema/comment")
+const Comment = db.model("comments", CommentSchema)
+
 
 // 返回文章发表页
 exports.addPage = async (ctx) => {
@@ -28,11 +31,18 @@ exports.add = async ctx => {
     // 用户登录发表 post发来的数据
     const data = ctx.request.body
     // 主动添加一下文章的作者的uid
-    data.author = ctx.session.uid
+    data.author = ctx.session.uid;
+    data.commentNum = 0;
 
     await new Promise((resolve, reject) => {
         new Article(data).save((err, data) => {
             if(err){ return reject(err) }
+
+            User.update({_id: data.author}, {$inc: {articleNum: 1}}, err => {
+                if(err) return console.log(err)
+                console.log("文章保存成功")
+            })
+            console.log(data.author);
             resolve(data)
         })
     })
@@ -73,5 +83,29 @@ exports.getList = async ctx => {
         artList,
         maxNum
     })
+}
 
+exports.details = async ctx => {
+    const _id = ctx.params.id
+
+    const article = await Article
+        .findById(_id)
+        .populate("author", "username")
+        .then(data => data)
+
+    const comment = await Comment
+        .find({article: _id})
+        .sort("-created")
+        .populate("from", "username avatar")
+        .then(data => data)
+        .catch(err => {
+            console.log(err)
+        })
+
+    await ctx.render("article", {
+        title: article.title,
+        article,
+        comment,
+        session: ctx.session
+    })
 }

@@ -15,7 +15,7 @@ layui.use(['layedit', 'layer', 'element'], function(){
 
   
 
-  $(".commment button").click(async () => {
+  $(".comment button").click(async () => {
     let content = layedit.getContent(idx).trim()
 
     if(content.length === 0)return layer.msg("评论内容不能为空")

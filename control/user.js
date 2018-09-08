@@ -103,7 +103,8 @@ exports.login = async ctx => {
         ctx.session = {
             username,
             uid: data[0]._id,
-            avatar: data[0].avatar
+            avatar: data[0].avatar,
+            role: data[0].role
         }
         // 成功登录
         await ctx.render("isOk", {
