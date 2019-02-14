@@ -61,5 +61,4 @@ typings/
 .next
 
 # database
-database/
-database/db
+/database
