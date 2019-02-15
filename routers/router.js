@@ -56,15 +56,17 @@ router.post("/upload", user.keepLog, upload.single("file"), user.upload)
 
 // 获取用户的所有评论
 router.get("/user/comments", user.keepLog, comment.comlist)
-// 删除用户的评论
-router.del("/comment/:id", user.keepLog, comment.del)
-
 // 获取用户的所有文章
 router.get("/user/articles", user.keepLog, article.artlist)
+// 获取用户
+router.get("/user/users", user.keepLog, user.usrlist)
 
+// 删除用户的评论
+router.del("/comment/:id", user.keepLog, comment.del)
 // 删除用户文章
 router.del("/article/:id", user.keepLog, article.del)
-
+// 删除用户
+router.del('/user/:id', user.keepLog, user.del)
 
 
 router.get("*", async ctx => {

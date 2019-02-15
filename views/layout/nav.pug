@@ -21,10 +21,10 @@
           if session && !session.isNew
             li.layui-nav-item
               a(href=session.role > 1 ? "/admin/user": "/admin/article") 个人中心
-                //- span.layui-badge-dot
+                span.layui-badge-dot
             li.layui-nav-item
               a(href="")
-                //- 用户测试头像
+                //- 用户头像
                 img(src=session.avatar).layui-nav-img
                 span= session.username
               dl.layui-nav-child

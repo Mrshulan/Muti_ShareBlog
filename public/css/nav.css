@@ -19,7 +19,7 @@ body {
 }
 
 
-.layui-nav * {
+.layui-nav .layui-nav-item a{
   font-size: 19px;
 }
 

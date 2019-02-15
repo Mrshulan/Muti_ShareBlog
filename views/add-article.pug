@@ -2,16 +2,15 @@ extends ./layout/layout
 
 block css
   style.
-    #main .layui-container {
+    #main .layui-container{
       margin-bottom: 15px;
       margin-top: 76px;
-      border-radius: 2px;
+      border-redius: 2px;
       background-color: #fff;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+      box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
       border: 1px solid #fff;
-
     }
-    .article-add {
+    .article-add{
       padding-top: 7.5px;
     }
 
@@ -21,12 +20,12 @@ block css
       height: 38px;
       line-height: 20px;
       border: 1px solid #e6e6e6;
-      border-radius: 2px 0 0 2px;
+      border-redius: 2px 0 0 2px;
       text-align: center;
-      background-color: #FBFBFB;
+      background-color: #fbfbfb;
       overflow: hidden;
-      white-space: nowrap;
       text-overflow: ellipsis;
+      white-space: nowrap;
       box-sizing: border-box;
     }
 
@@ -43,65 +42,60 @@ block contents
             li.layui-this 文章编辑
           #editing.layui-form.layui-form-content
             .layui-tab-item.layui-show
-              form(action="/article", method="POST")
-                .layui-row.layui-col-space15.layui-form-item
-                  .layui-col-md3
-                    label.layui-form-label 文章分类
-                    .layui-input-block
-                      select(lay-verify="required", name="tips", lay-filter="column")
-                        option
-                        option(value="nodejs") nodejs
-                        option(value="vue") vue
-                        option(value="react") react
-                        option(value="angular") angular
-                  .layui-col-md9
-                    label(for="L_title").layui-form-label 标题
-                    .layui-input-block
-                      input(type="text", name="title" required="", lay-verify="required" autocomplete="off")#L_title.layui-input
-                .layui-form-item.layui-form-text
-                  textarea(style="display: none;")#article-content
-
+            form(action="/article",method="POST")
+              .layui-row.layui-col-space1.layui-form-item
+                .layui-col-md3
+                  label.layui-form-label 文章分类
+                  .layui-input-block
+                    select(lay-verify="required",name="tips",lay-filter="column")
+                      option
+                      option(value="nodejs") nodejs
+                      option(value="vue") vue
+                      option(value="react") react
+                      option(value="angulat") angular
+                .layui-col-md9
+                  label(for="L_title").layui-form-label  标题
+                  .layui-input-block
+                    input(type="text",name="title",required="",lay-verify="required",autocomplete="off")#L_title.layui-input
+              .layui-form-item.layui-form-text
+                textarea(style="display:none;")#article-content
           .layui-form-item
             button(lay-filter="send" lay-submit).layui-btn 立即发布
-          
-
-
-          
 
 block scripts
+
   script.
-    layui.use(['form', 'layedit', "element"], function() {
+    layui.use(['form','layedit', 'layer'], function(){
       const form = layui.form;
       const layedit = layui.layedit;
-      const $ = layui.$
+      const layer = layui.layer;
+      const $ = layui.$;
 
-      const index = layedit.build('article-content', {
+      const index = layedit.build("article-content",{
         hideTool: [
-          'image' //插入图片
+          //- "image"
         ]
-      }); //建立编辑器
+      });//建立编辑器
 
       form.on("submit(send)", (res) => {
-        const { tips, title } = res.field
+        const { tips, title } = res.field;
 
-        if(layedit.getText(index).trim().length === 0)return layer.alert("请输入内容")
-        
+        if(layedit.getText(index).trim().length === 0) return layer.alert('请输入内容')
+
         const data = {
           tips,
           title,
           content: layedit.getContent(index)
         }
 
-        
-
         $.post("/article", data, (msg) => {
           if(msg.status){
             layer.alert('发表成功', (res) => {
               location.href = "/"
             })
-          }else{
-            layer.alert(`发表失败，失败信息：${msg.msg}`)
+          } else {
+            layer.alert(`发表失败，失败信息:${msg.msg}`)
           }
         })
-
       })
+    })

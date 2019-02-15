@@ -30,7 +30,7 @@ html
         //- 用户登录按钮
         ul.layui-nav.blog-user
           li.layui-nav-item
-            a(href="/user/logout") 退了
+            a(href="/user/logout") 登出
     // 左侧导航
     .layui-side.layui-bg-black
       .layui-side-scroll
@@ -56,7 +56,6 @@ html
         $("a").each((i, v) => {
           const a_href = $(v).prop('href')
 
-          
           if(a_href === location.href){
             $('li').eq(i).addClass("layui-this")
           }
