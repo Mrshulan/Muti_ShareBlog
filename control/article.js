@@ -61,7 +61,7 @@ exports.add = async ctx => {
 // 获取文章列表
 exports.getList = async ctx => {
   let page = ctx.params.id || 1
-  !!+ctx.params.id && page--
+  !+ctx.params.id && page--
 
   const maxNum = await Article.estimatedDocumentCount((err, num) => err ? console.log(err) : num)
   const artList = await Article
